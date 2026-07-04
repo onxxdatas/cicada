@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cicada — API load testing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">磱</span>
+      <div>
+        <div class="brand-name">cicada</div>
+        <div class="brand-sub">load testing, self-hosted</div>
+      </div>
+    </div>
+
+    <button class="btn btn-new" id="btn-new-test">+ New test</button>
+
+    <div class="sidebar-label">Tests</div>
+    <div class="test-list" id="test-list">
+      <div class="empty-hint">No tests yet — create one to get started.</div>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="empty-state">
+      <div class="empty-state-mark">磱</div>
+      <p>Select a test on the left, or create a new one, to see details and run it here.</p>
+    </div>
+  </main>
+
+</div>
+
+<!-- New test modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>New test</h2>
+      <button class="icon-btn" id="modal-close">&times;</button>
+    </div>
+
+    <form id="test-form">
+      <label class="field">
+        <span>Name</span>
+        <input type="text" name="name" placeholder="checkout-api-smoke" required />
+      </label>
+
+      <div class="field-row">
+        <label class="field field-method">
+          <span>Method</span>
+          <select name="method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>PATCH</option>
+            <option>DELETE</option>
+          </select>
+        </label>
+        <label class="field field-url">
+          <span>Target URL</span>
+          <input type="text" name="target_url" placeholder="https://api.example.com/v1/orders" required />
+        </label>
+      </div>
+
+      <div class="field">
+        <span>Headers</span>
+        <div id="headers-rows" class="kv-rows"></div>
+        <button type="button" class="btn-link" data-add="header">+ add header</button>
+      </div>
+
+      <label class="field" id="body-field" style="display:none">
+        <span>Body (JSON or raw)</span>
+        <textarea name="body" rows="4" placeholder='{"item_id": 42, "qty": 1}'></textarea>
+      </label>
+
+      <label class="field field-narrow">
+        <span>Virtual users (used if no stages below)</span>
+        <input type="number" name="vus" value="10" min="1" max="2000" />
+      </label>
+
+      <div class="field">
+        <span>Load stages <em>(optional — ramps VUs up/down over time)</em></span>
+        <div id="stages-rows" class="kv-rows"></div>
+        <button type="button" class="btn-link" data-add="stage">+ add stage</button>
+      </div>
+
+      <div class="field">
+        <span>Thresholds <em>(optional — pass/fail criteria)</em></span>
+        <div id="thresholds-rows" class="kv-rows"></div>
+        <button type="button" class="btn-link" data-add="threshold">+ add threshold</button>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="modal-cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create test</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

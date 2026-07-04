@@ -1,0 +1,59 @@
+name: cicada
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cicada}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cicada}
+      POSTGRES_DB: ${POSTGRES_DB:-cicada}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cicada}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      K6_IMAGE: ${K6_IMAGE:-grafana/k6:latest}
+      HOST_PROJECT_DIR: ${HOST_PROJECT_DIR}
+      COMPOSE_PROJECT_NAME: cicada
+    volumes:
+      # Talk to the HOST docker daemon to launch k6 containers on demand.
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Own view of the shared data dir, for writing scripts / tailing results.
+      - ./data:/data
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+
+volumes:
+  pgdata:

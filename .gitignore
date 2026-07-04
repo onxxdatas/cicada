@@ -1,0 +1,9 @@
+.env
+data/scripts/*
+data/results/*
+!data/scripts/.gitkeep
+!data/results/.gitkeep
+__pycache__/
+*.pyc
+.venv/
+node_modules/
