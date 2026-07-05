@@ -7,7 +7,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 if [ -f .env ]; then
-  echo ".env already exists — leaving it alone. Delete it first if you want to regenerate."
+  echo ".env already exists - leaving it alone. Delete it first if you want to regenerate."
   exit 0
 fi
 

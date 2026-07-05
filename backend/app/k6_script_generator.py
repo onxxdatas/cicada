@@ -1,7 +1,7 @@
 """
 Turns a Test row's configuration into a runnable k6 script.
 k6 scripts are plain JavaScript, so this is string templating rather than
-AST generation — but everything user-supplied is passed through
+AST generation - but everything user-supplied is passed through
 JSON.stringify-equivalent encoding (json.dumps) so it can't break out of the
 generated script.
 """

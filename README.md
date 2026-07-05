@@ -2,7 +2,7 @@
 
 A self-hosted API load & performance testing platform. Point it at an endpoint,
 describe the load pattern in a form, and watch requests-per-second, latency and
-error rate stream in live — no k6 scripts to hand-write, no CLI to remember.
+error rate stream in live - no k6 scripts to hand-write, no CLI to remember.
 
 Under the hood, every test run is executed as a disposable [k6](https://k6.io)
 container. Cicada builds the k6 script for you, launches the container,
@@ -27,7 +27,7 @@ docker compose up -d
 
 Open **http://localhost:3000** and create your first test.
 
-That's it — Postgres, Redis, the API, the UI, and the k6 runner all start
+That's it - Postgres, Redis, the API, the UI, and the k6 runner all start
 together. Nothing else needs to be installed on your machine.
 
 ## How it works
@@ -59,7 +59,7 @@ together. Nothing else needs to be installed on your machine.
 3. The backend talks to the **host** Docker daemon via the mounted
    `docker.sock` (the same "Docker-outside-of-Docker" pattern Jenkins agents
    use) and launches `grafana/k6` with the script mounted in, on the same
-   compose network as the rest of the stack — so it can hit other services
+   compose network as the rest of the stack - so it can hit other services
    in the project by their compose service name, or any external URL.
 4. k6 is told to write its metrics stream to `./data/results/<run_id>.json`
    as NDJSON. The backend tails that file as it grows, aggregates it into
@@ -90,7 +90,7 @@ Linux-style path Docker Desktop can translate correctly.
 
 The backend container is given access to `/var/run/docker.sock` so it can
 launch k6 containers on demand. This effectively gives the backend
-root-equivalent control of the host's Docker daemon — fine for a self-hosted
+root-equivalent control of the host's Docker daemon - fine for a self-hosted
 tool you run on your own machine or a trusted internal server, but treat it
 the same way you'd treat a Jenkins controller: don't expose the backend's
 port to the open internet without authentication in front of it.
@@ -98,7 +98,7 @@ port to the open internet without authentication in front of it.
 ## Environment variables
 
 See `.env.example`. The one that matters most locally is
-`HOST_PROJECT_DIR` — it must be the **absolute host path** to this project
+`HOST_PROJECT_DIR` - it must be the **absolute host path** to this project
 directory, because the backend asks the host Docker daemon to bind-mount
 `./data` into the k6 containers it spawns, and the daemon only understands
 host paths, not paths inside the backend container.

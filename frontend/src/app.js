@@ -1,5 +1,5 @@
 // -------------------------------------------------------------
-// Cicada frontend — no framework, just fetch + DOM + a canvas.
+// Cicada frontend - no framework, just fetch + DOM + a canvas.
 // -------------------------------------------------------------
 
 const state = {
@@ -37,7 +37,7 @@ const triggerRun = (testId) => api(`/api/tests/${testId}/run`, { method: "POST" 
 function renderTestList() {
   const list = document.getElementById("test-list");
   if (state.tests.length === 0) {
-    list.innerHTML = `<div class="empty-hint">No tests yet — create one to get started.</div>`;
+    list.innerHTML = `<div class="empty-hint">No tests yet - create one to get started.</div>`;
     return;
   }
   list.innerHTML = state.tests
@@ -133,7 +133,7 @@ function runRowHtml(run) {
     <div class="run-row" data-id="${run.id}">
       <span class="badge badge-${run.status}">${run.status}</span>
       <span class="run-time">${formatTime(run.created_at)}</span>
-      <span>${run.summary ? summaryOneLiner(run.summary) : "—"}</span>
+      <span>${run.summary ? summaryOneLiner(run.summary) : "-"}</span>
       <span class="run-time">${run.id.slice(0, 8)}</span>
     </div>`;
 }
@@ -144,7 +144,7 @@ function summaryOneLiner(summary) {
     const avg = summary?.metrics?.http_req_duration?.avg;
     return `${reqs} req${avg ? `, avg ${avg.toFixed(0)}ms` : ""}`;
   } catch {
-    return "—";
+    return "-";
   }
 }
 

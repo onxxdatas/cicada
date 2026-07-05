@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------
-   Cicada — design tokens
+   Cicada - design tokens
    A dry-summer palette (bark, soil, cicada-wing amber) instead of
    the usual dark+neon or cream+serif dashboards. Square edges,
    hairline rules, monospace for anything measured.
@@ -322,7 +322,7 @@ button, input, select, textarea {
 .badge-failed, .badge-error { color: var(--danger); }
 
 /* ---------------------------------------------------------------
-   Run view — the signature element: a live pulse strip
+   Run view - the signature element: a live pulse strip
 ------------------------------------------------------------------ */
 .run-view-header {
   display: flex;
