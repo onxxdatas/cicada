@@ -33,9 +33,7 @@ class Test(Base):
     headers = Column(JSONB, nullable=False, default=dict)
     body = Column(Text, nullable=True)
     vus = Column(Integer, nullable=False, default=10)
-    # stages: list of {"duration": "30s", "target": 20}
     stages = Column(JSONB, nullable=False, default=list)
-    # thresholds: list of {"metric": "http_req_duration", "expression": "p(95)<500"}
     thresholds = Column(JSONB, nullable=False, default=list)
     created_at = Column(DateTime(timezone=True), default=_now)
 

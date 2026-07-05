@@ -2,28 +2,33 @@
 Launches k6 via the HOST docker daemon (Docker-outside-of-Docker), tails the
 NDJSON metrics file it writes, aggregates it into 1-second buckets, and
 streams those buckets to any browser subscribed to the run over a WebSocket.
-
-This module intentionally uses only synchronous docker-py calls, wrapped in
-asyncio.to_thread — docker-py has no native async API.
 """
 
+
+
+"""
+Importings
+"""
 import asyncio
 import json
 import math
 import os
 import time
 from datetime import datetime, timezone
-
 import docker
-
 from app.config import settings
 from app.database import SessionLocal
 from app.k6_script_generator import generate_k6_script
 from app.models import Run, Test
 from app.ws_manager import ws_manager
 
-POLL_INTERVAL_SECONDS = 1.0
-DB_FLUSH_EVERY = 3  # persist timeline to Postgres every N polls
+
+
+
+
+
+POLL_INTERVAL_SECONDS = 1.6 #changd to 1.6, to minimize GPU/CPU activity
+DB_FLUSH_EVERY = 3  #persist timelne to Postgres every N polls
 
 
 def _now():

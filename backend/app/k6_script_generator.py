@@ -1,20 +1,27 @@
 """
 Turns a Test row's configuration into a runnable k6 script.
-
 k6 scripts are plain JavaScript, so this is string templating rather than
 AST generation — but everything user-supplied is passed through
 JSON.stringify-equivalent encoding (json.dumps) so it can't break out of the
 generated script.
 """
 
-import json
 
+
+
+import json
 from app.models import Test
+
+
+
 
 
 def generate_k6_script(test: Test) -> str:
     headers = json.dumps(test.headers or {})
-    body = json.dumps(test.body) if test.body else "null"
+    if test.method.upper() in {"GET", "HEAD"}:
+      body = "null"
+    else:
+      body = json.dumps(test.body) if test.body is not None else "null"
     method = json.dumps(test.method.upper())
     url = json.dumps(test.target_url)
 
@@ -23,8 +30,8 @@ def generate_k6_script(test: Test) -> str:
         vus_option = ""
         stages_option = f"stages: {stages_js},"
     else:
-        # No stages defined: flat load at `vus` for a default 30s.
-        vus_option = f"vus: {test.vus},\n  duration: '30s',"
+        # No stages defined: flat load at `vus` for a default 25s.
+        vus_option = f"vus: {test.vus},\n  duration: '25s',"
         stages_option = ""
 
     thresholds_js = "{}"

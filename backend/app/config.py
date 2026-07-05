@@ -8,11 +8,8 @@ class Settings:
     REDIS_URL: str = os.environ.get("REDIS_URL", "redis://redis:6379/0")
     K6_IMAGE: str = os.environ.get("K6_IMAGE", "grafana/k6:latest")
 
-    # Absolute path to the project root ON THE HOST. Required so the backend
-    # can ask the host docker daemon to bind-mount ./data into k6 containers.
+    # path to project root is ON THE HOST required so the backend can mount to k6 containers using docker deamon
     HOST_PROJECT_DIR: str = os.environ.get("HOST_PROJECT_DIR", "")
-
-    # Paths as seen INSIDE this backend container (bind-mounted from ./data).
     DATA_DIR: str = "/data"
     SCRIPTS_DIR: str = "/data/scripts"
     RESULTS_DIR: str = "/data/results"
@@ -28,5 +25,10 @@ class Settings:
     def host_results_dir(self) -> str:
         return f"{self.HOST_PROJECT_DIR}/data/results"
 
-
 settings = Settings()
+
+
+
+
+
+
