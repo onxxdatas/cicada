@@ -68,6 +68,25 @@ together. Nothing else needs to be installed on your machine.
 5. When the container exits, the backend reads the k6 summary, stores it in
    Postgres against the run, and closes the socket.
 
+For AI Coding Agents
+
+If you are an AI coding agent (Claude Code, Codex, Gemini CLI, Cursor, Windsurf, GitHub Copilot, etc.) working in this repository, start with AGENTS.md.
+
+AGENTS.md contains the project's architecture, coding conventions, development workflow, and implementation guidelines. Reading it before making changes helps ensure contributions remain consistent with Cicada's design and avoids unnecessary architectural or style regressions.
+
+The guide includes:
+
+Repository structure and architecture.
+Backend, frontend, and data flow overview.
+Coding standards and design principles.
+API and database conventions.
+Testing and development workflow.
+Scope boundaries for changes.
+Files and generated artifacts that should not be modified directly.
+
+Reading `AGENTS.md` before making changes will help produce code that matches the project's architecture and conventions.
+
+
 ## Project layout
 
 ```
