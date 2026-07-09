@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import Any, Optional
-from pydantic import BaseModel, Field
-
+from pydantic import BaseModel, Field,field_validator
+from urllib.parse import urlparse
+import ipaddress
 
 
 
@@ -24,6 +25,37 @@ class TestCreate(BaseModel):
     vus: int = Field(10, ge=1, le=2000)
     stages: list[Stage] = Field(default_factory=list)
     thresholds: list[Threshold] = Field(default_factory=list)
+    
+    @field_validator("target_url")
+    @classmethod
+    def validate_target_url(cls, value: str) -> str:
+        value = value.strip()
+
+        if not value:
+            raise ValueError("URL cannot be empty")
+
+        if " " in value:
+            raise ValueError("URL cannot contain spaces")
+
+        parsed = urlparse(value)
+
+        if parsed.scheme not in ("http", "https"):
+            raise ValueError("URL must start with http:// or https://")
+
+        if not parsed.hostname:
+            raise ValueError("URL must include a hostname")
+
+        if parsed.hostname == "localhost":
+            raise ValueError("Cannot target localhost")
+        try:
+            ip = ipaddress.ip_address(parsed.hostname)
+        except ValueError:
+            ip = None
+
+        if ip and (ip.is_private or ip.is_loopback or ip.is_unspecified):
+            raise ValueError("Private or local IPs are not allowed")
+
+        return value
 
 
 class TestOut(BaseModel):
