@@ -170,14 +170,11 @@ async def _tail_and_broadcast(run_id: str, results_path: str, stop_event: asynci
 
 
 def _persist_timeline(run_id: str, timeline: list[dict]) -> None:
-    db = SessionLocal()
-    try:
+    with SessionLocal() as db:
         run = db.get(Run, run_id)
         if run:
             run.timeline = timeline
             db.commit()
-    finally:
-        db.close()
 
 
 def _read_summary(summary_path: str) -> dict | None:
@@ -191,8 +188,7 @@ def _read_summary(summary_path: str) -> dict | None:
 
 
 async def run_test(run_id: str, test_id: str) -> None:
-    db = SessionLocal()
-    try:
+    with SessionLocal() as db:
         test = db.get(Test, test_id)
         run = db.get(Run, run_id)
         if not test or not run:
@@ -211,8 +207,6 @@ async def run_test(run_id: str, test_id: str) -> None:
         run.status = "running"
         run.started_at = _now()
         db.commit()
-    finally:
-        db.close()
 
     results_path = os.path.join(settings.RESULTS_DIR, results_filename)
     summary_path = os.path.join(settings.RESULTS_DIR, summary_filename)
@@ -243,14 +237,11 @@ async def run_test(run_id: str, test_id: str) -> None:
             detach=True,
         )
 
-        db = SessionLocal()
-        try:
+        with SessionLocal() as db:
             run = db.get(Run, run_id)
             if run:
                 run.container_id = container.id
                 db.commit()
-        finally:
-            db.close()
 
         stop_event = asyncio.Event()
         tail_task = asyncio.create_task(_tail_and_broadcast(run_id, results_path, stop_event))
@@ -283,8 +274,7 @@ async def run_test(run_id: str, test_id: str) -> None:
     else:
         status = "error"
 
-    db = SessionLocal()
-    try:
+    with SessionLocal() as db:
         run = db.get(Run, run_id)
         if run:
             run.status = status
@@ -293,8 +283,6 @@ async def run_test(run_id: str, test_id: str) -> None:
             run.timeline = timeline or run.timeline
             run.error = error_message
             db.commit()
-    finally:
-        db.close()
 
     await ws_manager.broadcast(
         run_id,
