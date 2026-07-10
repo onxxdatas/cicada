@@ -5,6 +5,13 @@ class Settings:
     DATABASE_URL: str = os.environ.get(
         "DATABASE_URL", "postgresql+psycopg2://cicada:cicada@postgres:5432/cicada"
     )
+    DATABASE_POOL_SIZE: int = int(os.environ.get("DATABASE_POOL_SIZE", "20"))
+    DATABASE_MAX_OVERFLOW: int = int(os.environ.get("DATABASE_MAX_OVERFLOW", "10"))
+    DATABASE_POOL_TIMEOUT: int = int(os.environ.get("DATABASE_POOL_TIMEOUT", "30"))
+    DATABASE_POOL_RECYCLE: int = int(os.environ.get("DATABASE_POOL_RECYCLE", "3600"))
+    DATABASE_POOL_PRE_PING: bool = os.environ.get(
+        "DATABASE_POOL_PRE_PING", "true"
+    ).lower() in ("true", "1", "yes")
     REDIS_URL: str = os.environ.get("REDIS_URL", "redis://redis:6379/0")
     K6_IMAGE: str = os.environ.get("K6_IMAGE", "grafana/k6:latest")
     # path to project root is ON THE HOST required so the backend can mount to k6 containers using docker deamon
