@@ -19,7 +19,7 @@ WebSocket.
 **Run**
 
 ```
-git clone https://github.com/yourusername/cicada
+git clone https://github.com/onxxdatas/cicada
 cd cicada
 ./scripts/setup-env.sh   # writes .env with the correct HOST_PROJECT_DIR
 docker compose up -d
@@ -130,3 +130,7 @@ host paths, not paths inside the backend container.
   beyond localhost.
 - Point k6 at `--out experimental-prometheus-rw` instead of the file tail
   if you already run Prometheus/Grafana and want richer dashboards.
+
+## License
+
+MIT
