@@ -88,7 +88,10 @@ function renderTestDetail(test, runs) {
         <h1 class="panel-title">${escapeHtml(test.name)}</h1>
         <div class="panel-subtitle">${test.method} ${escapeHtml(test.target_url)}</div>
       </div>
-      <button class="btn btn-primary" id="run-btn">Run test</button>
+      <div class="panel-button">
+        <button class="btn" id="copy-curl-btn">Copy as cURL</button>
+        <button class="btn btn-primary" id="run-btn">Run test</button>
+      </div>
     </div>
 
     <div class="spec-grid">
@@ -123,9 +126,61 @@ function renderTestDetail(test, runs) {
   `;
 
   document.getElementById("run-btn").addEventListener("click", () => startRun(test.id));
+  document.getElementById("copy-curl-btn").addEventListener("click", () => copyCurlToClipboard(test, "copy-curl-btn"));
   main.querySelectorAll(".run-row").forEach((el) => {
     el.addEventListener("click", () => openRun(el.dataset.id));
   });
+}
+
+// ---------------- Copy Test as cURL to Clipboard----------------
+
+function copyCurlToClipboard(test, btnId) {
+  const curl = generateCurl(test);
+  copyToClipboard(curl);
+  
+  const btn = document.getElementById(btnId);
+  if (btn) {
+    const originalText = btn.textContent;
+    btn.textContent = "Copied!";
+    
+    setTimeout(() => {
+      btn.textContent = originalText;
+    }, 2000);
+  }
+}
+
+function generateCurl(test) {
+  const method = (test.method || "GET").toUpperCase();
+  const parts = [`curl -X ${method} '${test.target_url}'`];
+
+  // Process and append headers
+  if (test.headers && Object.keys(test.headers).length > 0) {
+    for (const [key, value] of Object.entries(test.headers)) {
+      if (key.trim()) {
+        const escapedValue = String(value).replace(/'/g, "'\\''");
+        parts.push(`  -H '${key}: ${escapedValue}'`);
+      }
+    }
+  }
+
+  // Process and append body (omit for GET method, or if empty)
+  if (method !== "GET" && test.body) {
+    let bodyStr = typeof test.body === "object" ? JSON.stringify(test.body) : test.body;
+    if (bodyStr.trim()) {
+      // Escape inner backslashes first, then escape single quotes
+      const escapedBody = bodyStr.replace(/\\/g, '\\\\').replace(/'/g, "'\\''");
+      parts.push(`  -d '${escapedBody}'`);
+    }
+  }
+
+  return parts.join(" \\\n");
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text)
+    .catch((err) => {
+      console.error("Failed to copy cURL command string to clipboard: ", err);
+    });
 }
 
 function runRowHtml(run) {

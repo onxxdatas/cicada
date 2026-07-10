@@ -246,6 +246,11 @@ button, input, select, textarea {
   word-break: break-all;
 }
 
+.panel-button {
+  display: flex;
+  gap: 6px;
+}
+
 .spec-grid {
   display: grid;
   grid-template-columns: repeat(4, auto);
