@@ -10,6 +10,37 @@ const state = {
   pulsePoints: [],
 };
 
+// ---------------- Theme ----------------
+
+function getPreferredTheme() {
+  const saved = localStorage.getItem("cicada-theme");
+  if (saved === "light" || saved === "dark") return saved;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  const btn = document.getElementById("theme-toggle");
+  if (btn) btn.textContent = theme === "dark" ? "\u2600" : "\u25D0";
+  drawPulse();
+}
+
+function initTheme() {
+  applyTheme(getPreferredTheme());
+  const btn = document.getElementById("theme-toggle");
+  if (!btn) {
+    console.warn("theme-toggle button not found in the DOM - check index.html");
+    return;
+  }
+  btn.addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    localStorage.setItem("cicada-theme", next);
+    applyTheme(next);
+  });
+}
+
+initTheme();
+
 // ---------------- API helpers ----------------
 
 async function api(path, opts = {}) {

@@ -20,8 +20,41 @@
   --success: #2e7d32;
   --danger: #b3261e;
 
+  --input-bg: #ffffff;
+  --btn-bg: #f0f0f0;
+  --btn-hover: #e6e6e6;
+  --row-hover: #eeeeee;
+  --active-bg: #dde8f7;
+  --overlay: rgba(0, 0, 0, 0.4);
+  --on-accent: #ffffff;
+
   --mono: Consolas, Menlo, monospace;
   --sans: Arial, Helvetica, sans-serif;
+}
+
+[data-theme="dark"] {
+  --bg: #1e1e1e;
+  --surface: #262626;
+  --border: #3d3d3d;
+  --border-dark: #555555;
+
+  --text: #e2e2e2;
+  --text-dim: #b0b0b0;
+  --text-faint: #808080;
+
+  --accent: #4c8bdb;
+  --accent-hover: #6ea0e3;
+
+  --success: #6fbf73;
+  --danger: #e5766a;
+
+  --input-bg: #2a2a2a;
+  --btn-bg: #333333;
+  --btn-hover: #3c3c3c;
+  --row-hover: #2c2c2c;
+  --active-bg: #2a3d55;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --on-accent: #ffffff;
 }
 
 * { box-sizing: border-box; }
@@ -33,6 +66,10 @@ html, body {
   color: var(--text);
   font-family: var(--sans);
   font-size: 14px;
+}
+
+body {
+  transition: background 0.1s linear, color 0.1s linear;
 }
 
 button, input, select, textarea {
@@ -76,6 +113,28 @@ button, input, select, textarea {
   border-bottom: 1px solid var(--border);
 }
 
+.brand > div:nth-child(2) {
+  flex: 1;
+}
+
+.theme-toggle {
+  border: 1px solid var(--border-dark);
+  background: var(--btn-bg);
+  color: var(--text);
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  background: var(--btn-hover);
+}
+
 .brand-mark {
   font-size: 18px;
   color: var(--accent);
@@ -97,7 +156,7 @@ button, input, select, textarea {
 ------------------------------------------------------------------ */
 .btn {
   border: 1px solid var(--border-dark);
-  background: #f0f0f0;
+  background: var(--btn-bg);
   color: var(--text);
   padding: 6px 12px;
   font-size: 13px;
@@ -106,7 +165,7 @@ button, input, select, textarea {
 }
 
 .btn:hover {
-  background: #e6e6e6;
+  background: var(--btn-hover);
 }
 
 .btn-new {
@@ -118,7 +177,7 @@ button, input, select, textarea {
 .btn-primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: #ffffff;
+  color: var(--on-accent);
   font-weight: bold;
 }
 
@@ -128,7 +187,7 @@ button, input, select, textarea {
 }
 
 .btn-ghost {
-  background: #f0f0f0;
+  background: var(--btn-bg);
 }
 
 .btn-link {
@@ -176,15 +235,15 @@ button, input, select, textarea {
   border: 1px solid var(--border);
   border-top: none;
   cursor: pointer;
-  background: #ffffff;
+  background: var(--bg);
 }
 
 .test-item:first-child { border-top: 1px solid var(--border); }
 
-.test-item:hover { background: #eeeeee; }
+.test-item:hover { background: var(--row-hover); }
 
 .test-item.active {
-  background: #dde8f7;
+  background: var(--active-bg);
   border-color: var(--accent);
 }
 
@@ -295,12 +354,12 @@ button, input, select, textarea {
   border-bottom: 1px solid var(--border);
   font-size: 12.5px;
   cursor: pointer;
-  background: #ffffff;
+  background: var(--bg);
 }
 
 .run-row:nth-child(even) { background: var(--surface); }
 .run-row:last-child { border-bottom: none; }
-.run-row:hover { background: #eeeeee; }
+.run-row:hover { background: var(--row-hover); }
 
 .run-row .run-time {
   font-family: var(--mono);
@@ -341,7 +400,7 @@ button, input, select, textarea {
 
 .pulse-wrap {
   border: 1px solid var(--border);
-  background: #ffffff;
+  background: var(--bg);
   margin: 12px 0 16px 0;
 }
 
@@ -361,7 +420,7 @@ button, input, select, textarea {
 }
 
 .stat-cell {
-  background: #ffffff;
+  background: var(--bg);
   padding: 10px 12px;
 }
 
@@ -425,7 +484,7 @@ button, input, select, textarea {
 .field select,
 .field textarea {
   width: 100%;
-  background: #ffffff;
+  background: var(--input-bg);
   border: 1px solid var(--border-dark);
   padding: 6px 8px;
   font-size: 13px;
@@ -456,7 +515,7 @@ button, input, select, textarea {
 }
 
 .kv-row input, .kv-row select {
-  background: #ffffff;
+  background: var(--input-bg);
   border: 1px solid var(--border-dark);
   padding: 5px 7px;
   font-size: 12.5px;
@@ -469,7 +528,7 @@ button, input, select, textarea {
 }
 
 .kv-row .remove-row {
-  background: #f0f0f0;
+  background: var(--btn-bg);
   border: 1px solid var(--border-dark);
   color: var(--text-faint);
   cursor: pointer;
@@ -484,7 +543,7 @@ button, input, select, textarea {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--overlay);
   display: none;
   align-items: center;
   justify-content: center;
@@ -495,7 +554,7 @@ button, input, select, textarea {
 .modal-overlay.open { display: flex; }
 
 .modal {
-  background: #ffffff;
+  background: var(--bg);
   border: 1px solid var(--border-dark);
   width: 520px;
   max-height: 88vh;
