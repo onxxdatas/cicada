@@ -39,6 +39,11 @@ services:
       K6_IMAGE: ${K6_IMAGE:-grafana/k6:latest}
       HOST_PROJECT_DIR: ${HOST_PROJECT_DIR}
       COMPOSE_PROJECT_NAME: cicada
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-20}
+      DATABASE_MAX_OVERFLOW: ${DATABASE_MAX_OVERFLOW:-10}
+      DATABASE_POOL_TIMEOUT: ${DATABASE_POOL_TIMEOUT:-30}
+      DATABASE_POOL_RECYCLE: ${DATABASE_POOL_RECYCLE:-3600}
+      DATABASE_POOL_PRE_PING: ${DATABASE_POOL_PRE_PING:-true}
     volumes:
       # Talk to the HOST docker daemon to launch k6 containers on demand.
       - /var/run/docker.sock:/var/run/docker.sock
