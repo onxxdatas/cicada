@@ -294,7 +294,7 @@ function drawPulse() {
 
   const points = state.pulsePoints.slice(-90);
   if (points.length === 0) {
-    ctx.strokeStyle = "#3A3226";
+    ctx.strokeStyle = "#cccccc";
     ctx.beginPath();
     ctx.moveTo(0, h / 2);
     ctx.lineTo(w, h / 2);
@@ -306,7 +306,7 @@ function drawPulse() {
   const stepX = w / Math.max(1, points.length - 1 || 1);
   const mid = h / 2;
 
-  ctx.strokeStyle = "#D9A441";
+  ctx.strokeStyle = "#1a5fb4";
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   points.forEach((p, i) => {
@@ -318,7 +318,7 @@ function drawPulse() {
   });
   ctx.stroke();
 
-  ctx.strokeStyle = "rgba(217,164,65,0.35)";
+  ctx.strokeStyle = "rgba(26,95,180,0.3)";
   ctx.beginPath();
   points.forEach((p, i) => {
     const amp = (p.rps / maxRps) * (h / 2 - 8);
@@ -329,7 +329,7 @@ function drawPulse() {
   });
   ctx.stroke();
 
-  ctx.strokeStyle = "#3A3226";
+  ctx.strokeStyle = "#cccccc";
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(0, mid);

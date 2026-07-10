@@ -38,11 +38,6 @@ def _validate_settings(s: Settings) -> None:
             f"HOST_PROJECT_DIR must be an absolute path, got: {s.HOST_PROJECT_DIR!r}. "
             "Example: HOST_PROJECT_DIR=/home/user/cicada"
         )
-    if not os.path.isdir(s.HOST_PROJECT_DIR):
-        raise EnvironmentError(
-            f"HOST_PROJECT_DIR={s.HOST_PROJECT_DIR!r} does not exist or is not a directory. "
-            "Ensure the path exists on the host machine before starting the application."
-        )
 
 
 settings = Settings()

@@ -27,7 +27,13 @@ services:
 
   backend:
     build: ./backend
+    user: root
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     depends_on:
       postgres:
         condition: service_healthy

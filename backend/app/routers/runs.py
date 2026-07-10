@@ -14,7 +14,7 @@ router = APIRouter(tags=["runs"])
 
 
 @router.post("/api/tests/{test_id}/run", response_model=RunOut)
-def trigger_run(test_id: str, db: Session = Depends(get_db)):
+async def trigger_run(test_id: str, db: Session = Depends(get_db)):
     test = db.get(Test, test_id)
     if not test:
         raise HTTPException(status_code=404, detail="Test not found")
@@ -57,3 +57,9 @@ async def run_socket(websocket: WebSocket, run_id: str):
             await websocket.receive_text()
     except WebSocketDisconnect:
         await ws_manager.disconnect(run_id, websocket)
+
+
+
+@router.get("/health")
+async def health():
+    return {"status": "ok"}

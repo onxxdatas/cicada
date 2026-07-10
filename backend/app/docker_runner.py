@@ -9,6 +9,7 @@ streams those buckets to any browser subscribed to the run over a WebSocket.
 """
 Importings
 """
+import pwd
 import asyncio
 import json
 import math
@@ -80,15 +81,17 @@ async def _tail_and_broadcast(run_id: str, results_path: str, stop_event: asynci
     last_completed_second: int | None = None
     offset = 0
     polls_since_flush = 0
+    last_vus = 0
 
     while True:
-        await asyncio.sleep(POLL_INTERVAL_SECONDS)
+        if not os.path.exists(results_path):
+            await asyncio.sleep(POLL_INTERVAL_SECONDS)
+            continue
 
-        if os.path.exists(results_path):
-            with open(results_path, "r") as f:
-                f.seek(offset)
-                new_lines = f.readlines()
-                offset = f.tell()
+        with open(results_path, "r") as f:
+            f.seek(offset)
+            new_lines = f.readlines()
+            offset = f.tell()
 
             for line in new_lines:
                 line = line.strip()
@@ -116,9 +119,11 @@ async def _tail_and_broadcast(run_id: str, results_path: str, stop_event: asynci
                 elif metric == "http_req_duration":
                     bucket.durations.append(value)
                 elif metric == "http_req_failed":
-                    bucket.failed += int(value)
+                    if value == 1:
+                        bucket.failed += 1
                 elif metric == "vus":
-                    bucket.vus = max(bucket.vus, int(value))
+                    last_vus = int(value)
+                    bucket.vus = last_vus
 
         # Flush any second that is now safely in the past (data for it has
         # stopped arriving because k6 has moved on).
@@ -127,9 +132,17 @@ async def _tail_and_broadcast(run_id: str, results_path: str, stop_event: asynci
         for second in ready_seconds:
             if second >= cutoff:
                 continue
+            buckets[second].vus = last_vus
             point = buckets[second].to_point(second)
-            timeline.append(point)
-            await ws_manager.broadcast(run_id, {"type": "point", "point": point})
+
+            if (
+                point["rps"] > 0
+                or point["avg_ms"] > 0
+                or point["p95_ms"] > 0
+            ):
+                timeline.append(point)
+                await ws_manager.broadcast(run_id, {"type": "point", "point": point})
+
             last_completed_second = second
             del buckets[second]
 
@@ -142,10 +155,17 @@ async def _tail_and_broadcast(run_id: str, results_path: str, stop_event: asynci
             # Drain whatever is left once the container has finished.
             for second in sorted(buckets):
                 point = buckets[second].to_point(second)
-                timeline.append(point)
-                await ws_manager.broadcast(run_id, {"type": "point", "point": point})
-            break
 
+                if (
+                    point["rps"] > 0
+                    or point["avg_ms"] > 0
+                    or point["p95_ms"] > 0
+                ):
+                    timeline.append(point)
+                    await ws_manager.broadcast(run_id, {"type": "point", "point": point})
+
+            break
+        await asyncio.sleep(POLL_INTERVAL_SECONDS)
     return timeline
 
 
@@ -219,6 +239,7 @@ async def run_test(run_id: str, test_id: str) -> None:
                 settings.host_results_dir: {"bind": "/results", "mode": "rw"},
             },
             network=settings.COMPOSE_NETWORK,
+            user=f"{os.getuid()}:{os.getgid()}",
             detach=True,
         )
 
@@ -237,6 +258,7 @@ async def run_test(run_id: str, test_id: str) -> None:
         wait_result = await asyncio.to_thread(container.wait)
         exit_code = wait_result.get("StatusCode", -1)
 
+        await asyncio.sleep(2)
         stop_event.set()
         timeline = await tail_task
 
