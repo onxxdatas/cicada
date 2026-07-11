@@ -27,7 +27,7 @@ services:
 
   backend:
     build: ./backend
-    user: root
+    user: root #IMPORTANT: root required because Cicada launches k6 containers through the Docker socket
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]

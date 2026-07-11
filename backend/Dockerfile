@@ -56,11 +56,6 @@ COPY --from=builder /opt/venv /opt/venv
 #and application itself
 COPY app ./app
 
-#creating no-root user
-RUN useradd --create-home --shell /bin/bash appuser && \
-    chown -R appuser:appuser /app
-USER appuser
-
 
 #exposing 8000th port
 EXPOSE 8000
